@@ -1,0 +1,100 @@
+\documentclass[12pt]{article}
+
+% Pakiety językowe i kodowanie
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{polski}
+\usepackage[english,polish]{babel}
+
+% Geometria strony
+\usepackage[margin=2.5cm]{geometry}
+
+% Pakiety matematyczne
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{bm} % Pogrubione symbole matematyczne
+
+% Pakiety graficzne i wykresy
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{matrix, positioning, arrows.meta, shapes.geometric, calc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+
+% Ulepszona typografia i renderowanie fontów
+\usepackage{microtype}
+\usepackage{lmodern} % Latin Modern fonts - lepsza jakość niż Computer Modern
+
+% Algorytmy
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\floatname{algorithm}{Algorytm}
+\renewcommand{\listalgorithmname}{Spis algorytmów}
+\renewcommand{\algorithmicrequire}{\textbf{Dane wejściowe:}}
+\renewcommand{\algorithmicensure}{\textbf{Wynik:}}
+
+% Linki i metadane
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    filecolor=magenta,      
+    urlcolor=blue,
+    pdftitle={Dokumentacja Projektowa - Atak Primal},
+    pdfauthor={Kryptologia Akademicka}
+}
+
+% Konfiguracja nagłówków
+\usepackage{titlesec}
+\titlelabel{\thetitle.\quad}
+
+% Definicje twierdzeń
+\theoremstyle{definition}
+\newtheorem{definition}{Definicja}[section]
+\newtheorem{theorem}{Twierdzenie}[section]
+\newtheorem{remark}{Uwaga}[section]
+
+% Strona tytułowa
+\title{
+    \vspace{-2cm}
+    \vspace{2cm}
+    \Huge \textbf{DOKUMENTACJA PROJEKTOWA} \\
+    \vspace{0.5cm}
+    \LARGE Temat: Analiza teoretyczna i implementacja ataku typu Primal na kryptosystemy oparte na problemie LWE
+    \vspace{2cm}
+}
+\author{\textbf{Wykonawca:} [Twoje Imię i Nazwisko] \\ \textbf{Rodzaj projektu:} Badawczo-implementacyjny}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\newpage
+
+\input{sections/01_wstep.tex}
+\input{sections/02_podstawy_teoretyczne.tex}
+\input{sections/03_opis_ataku.tex}
+\input{sections/04_wizualizacja_ataku.tex}
+\input{sections/05_specyfikacja_implementacji.tex}
+\input{sections/06_specyfikacja_ataku.tex}
+\input{sections/07_ograniczenia_ataku.tex}
+\input{sections/08_podsumowanie.tex}
+
+\begin{thebibliography}{9}
+\bibitem{regev05}
+O. Regev, "On lattices, learning with errors, random linear codes, and cryptography," \textit{Journal of the ACM}, 2009.
+
+\bibitem{albrecht15}
+M. R. Albrecht, R. Player, and S. Scott, "On the concrete hardness of Learning with Errors," \textit{Journal of Mathematical Cryptology}, 2015.
+
+\bibitem{baigalbraith14}
+S. Bai and S. D. Galbraith, "Lattice decoding attacks on binary LWE," \textit{ACISP 2014}.
+
+\bibitem{fpylll}
+The FPLLL Team, "fpylll: A Python wrapper for fplll," \url{https://github.com/fplll/fpylll}.
+\end{thebibliography}
+
+\end{document}

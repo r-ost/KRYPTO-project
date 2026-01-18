@@ -1,0 +1,17 @@
+\section{Specyfika i ograniczenia ataku}
+
+Należy pamiętać, że atak Primal ma charakter heurystyczny i nie gwarantuje sukcesu w każdym przypadku. Jego skuteczność jest ściśle powiązana z tzw. heurystyką Gaussa (ang. \textit{Gaussian Heuristic}).
+
+\subsection{Warunek powodzenia ataku}
+Atak zakończy się sukcesem, jeżeli wektor $\mathbf{v}_{target}$ (zawierający błąd) będzie krótszy od najkrótszego wektora, którego istnienie w losowej kracie o tym samym wyznaczniku przewiduje algorytm redukcji.
+Dla kraty o wymiarze $d$ i wyznaczniku $\det(\Lambda) = q^m$, oczekiwana długość najkrótszego wektora wyraża się wzorem:
+\begin{equation}
+    \lambda_1(\Lambda) \approx \sqrt{\frac{d}{2\pi e}} \det(\Lambda)^{1/d}
+\end{equation}
+Jeżeli spełniona jest nierówność $||\mathbf{v}_{target}|| \ll \lambda_1(\Lambda)$, algorytm BKZ z odpowiednio dużym parametrem $\beta$ odnajdzie poszukiwany wektor.
+
+\subsection{Ograniczenia metody}
+\begin{enumerate}
+    \item \textbf{Złożoność obliczeniowa:} Koszt algorytmu BKZ rośnie wykładniczo wraz ze wzrostem parametru $\beta$. Dla parametrów stosowanych w rzeczywistych systemach kryptograficznych (np. Kyber-768), wymagana wartość $\beta$ oscyluje w granicach 400–800, co czyni atak niewykonalnym przy użyciu klasycznych komputerów.
+    \item \textbf{Wymagania pamięciowe:} Przechowywanie bazy kraty dla dużych wymiarów ($d > 1000$) wiąże się z koniecznością alokacji znacznych zasobów pamięci RAM.
+\end{enumerate}

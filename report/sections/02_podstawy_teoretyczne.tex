@@ -1,0 +1,46 @@
+\section{Podstawy Teoretyczne}
+
+\subsection{Charakterystyka problemu Learning With Errors (LWE)}
+
+Problem LWE, sformułowany przez Odeda Regeva, stanowi fundament bezpieczeństwa współczesnych schematów szyfrowania postkwantowego. Jego trudność obliczeniowa polega na odtworzeniu tajnego wektora na podstawie układu równań liniowych obarczonych niewielkim błędem.
+
+\begin{definition}[Search-LWE]
+Niech $n \ge 1$ będzie parametrem bezpieczeństwa (wymiarem sekretu), $q \ge 2$ liczbą pierwszą (modułem), a $\chi$ rozkładem prawdopodobieństwa na $\mathbb{Z}_q$ (zazwyczaj dyskretnym rozkładem Gaussa). 
+Niech $\mathbf{s} \in \mathbb{Z}_q^n$ będzie tajnym wektorem wylosowanym z rozkładu jednostajnego.
+Atakujący dysponuje $m$ parami $(\mathbf{a}_i, b_i) \in \mathbb{Z}_q^n \times \mathbb{Z}_q$, spełniającymi zależność:
+\begin{equation}
+    b_i = \langle \mathbf{a}_i, \mathbf{s} \rangle + e_i \pmod q
+\end{equation}
+gdzie $e_i \leftarrow \chi$ oznacza losowy błąd (szum). Celem ataku jest wyznaczenie wektora $\mathbf{s}$.
+\end{definition}
+
+W notacji macierzowej problem ten definiuje się następująco:
+\begin{equation}
+    \mathbf{b} = \mathbf{A}\mathbf{s} + \mathbf{e} \pmod q
+\end{equation}
+gdzie poszczególne symbole oznaczają:
+\begin{itemize}
+    \item $\mathbf{A} \in \mathbb{Z}_q^{m \times n}$ – macierz publiczna (każdy wiersz odpowiada wektorowi $\mathbf{a}_i$),
+    \item $\mathbf{s} \in \mathbb{Z}_q^n$ – poszukiwany wektor tajny,
+    \item $\mathbf{e} \in \mathbb{Z}^m$ – nieznany wektor błędu o małej normie euklidesowej,
+    \item $\mathbf{b} \in \mathbb{Z}_q^m$ – znany wektor wyrazów wolnych.
+\end{itemize}
+
+\subsection{Definicja Kraty i Problem Najkrótszego Wektora (SVP)}
+
+Formalna definicja kraty opiera się na pojęciu bazy wektorowej i całkowitoliczbowych kombinacji liniowych.
+
+\begin{definition}[Krata]
+Niech $\mathbf{b}_1, \dots, \mathbf{b}_k$ będą liniowo niezależnymi wektorami w przestrzeni $\mathbb{R}^n$. Kratą $\mathcal{L}$ generowaną przez bazę $\mathbf{B} = [\mathbf{b}_1, \dots, \mathbf{b}_k]$ nazywamy zbiór wszystkich kombinacji liniowych wektorów bazy o współczynnikach całkowitych:
+\begin{equation}
+    \mathcal{L}(\mathbf{B}) = \left\{ \sum_{i=1}^k x_i \mathbf{b}_i : x_i \in \mathbb{Z} \right\} = \{ \mathbf{B}\mathbf{x} : \mathbf{x} \in \mathbb{Z}^k \}
+\end{equation}
+Liczbę $k$ nazywamy rangą kraty, a $n$ jej wymiarem. W kryptografii najczęściej rozważamy kraty pełnego rzędu, gdzie $k=n$.
+Krata jest dyskretną podgrupą addytywną przestrzeni $\mathbb{R}^n$.
+\end{definition}
+
+\begin{definition}[Unique Shortest Vector Problem - uSVP]
+Dla danej kraty $\mathcal{L}$ o wymiarze $d$, problem uSVP polega na znalezieniu najkrótszego niezerowego wektora $\mathbf{v} \in \mathcal{L}$, przy założeniu, że $\lambda_2(\mathcal{L}) \ge \gamma \cdot \lambda_1(\mathcal{L})$, gdzie $\gamma > 1$ jest współczynnikiem "luki" (ang. \textit{gap}), a $\lambda_i(\mathcal{L})$ oznacza $i$-te minimum kraty (długość $i$-tego najkrótszego liniowo niezależnego wektora).
+\end{definition}
+
+Atak Primal opiera się na spostrzeżeniu, że wektor błędu $\mathbf{e}$ (powiększony o składowe związane z sekretem) stanowi unikalnie krótki wektor w odpowiednio skonstruowanej kracie. Pozwala to na redukcję problemu LWE do problemu uSVP.

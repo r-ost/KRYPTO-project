@@ -1,0 +1,57 @@
+\section{Szczegółowy opis ataku typu Primal}
+
+\subsection{Konstrukcja kraty (Zanurzenie Kannana)}
+\label{sec:embedding}
+
+W celu przeprowadzenia ataku na instancję LWE opisaną parą $(\mathbf{A}, \mathbf{b})$, konstruuje się tzw. kratę primalną $\Lambda$.
+Równanie $\mathbf{b} \equiv \mathbf{As} + \mathbf{e} \pmod q$ można przekształcić do postaci równości w liczbach całkowitych:
+\begin{equation}
+    \mathbf{As} + \mathbf{e} - \mathbf{b} = q\mathbf{k}, \quad \text{dla pewnego wektora całkowitoliczbowego } \mathbf{k} \in \mathbb{Z}^m
+\end{equation}
+Po przekształceniu otrzymujemy:
+\begin{equation}
+    \mathbf{As} - q\mathbf{k} + \mathbf{e} = \mathbf{b}
+\end{equation}
+Powyższa zależność wskazuje, że wektor $\mathbf{b}$ znajduje się w niewielkiej odległości od punktu kraty rozpiętej przez kolumny macierzy $\mathbf{A}$ oraz $q\mathbf{I}$. Problem LWE jest zatem instancją problemu dekodowania z ograniczoną odległością (BDD – \textit{Bounded Distance Decoding}).
+
+Atak Primal przekształca problem BDD w problem uSVP poprzez technikę zanurzenia (ang. \textit{embedding}). Konstruowana jest macierz bazowa $\mathbf{B}_{primal}$ o wymiarach $d \times d$, gdzie $d = m + n + 1$:
+
+\begin{equation}
+\mathbf{B}_{primal} = 
+\begin{pmatrix}
+q\mathbf{I}_m & \mathbf{0}_{m \times n} & \mathbf{0}_{m \times 1} \\
+\mathbf{A}^T & \mathbf{I}_n & \mathbf{0}_{n \times 1} \\
+\mathbf{b}^T & \mathbf{0}_{1 \times n} & 1
+\end{pmatrix}
+\end{equation}
+
+Znaczenie poszczególnych bloków macierzy jest następujące:
+\begin{itemize}
+    \item $q\mathbf{I}_m \in \mathbb{Z}^{m \times m}$ – macierz diagonalna skalarna, odpowiadająca za arytmetykę modulo $q$.
+    \item $\mathbf{A}^T \in \mathbb{Z}^{n \times m}$ – transponowana macierz publiczna układu LWE.
+    \item $\mathbf{b}^T \in \mathbb{Z}^{1 \times m}$ – transponowany wektor wyników.
+    \item $\mathbf{I}_n \in \mathbb{Z}^{n \times n}$ – macierz jednostkowa, wiążąca współczynniki sekretu $\mathbf{s}$.
+    \item $1$ – stała normalizująca (współczynnik homograficzny), umożliwiająca uwzględnienie wektora $\mathbf{b}$ w strukturze kraty.
+\end{itemize}
+
+\subsection{Mechanizm działania ataku}
+
+Rozważmy wektor współczynników całkowitych $\mathbf{x} = (\mathbf{k}, \mathbf{s}, -1)$. Mnożąc ten wektor przez bazę kraty $\mathbf{B}_{primal}$ (w konwencji wierszowej, tj. $\mathbf{x} \cdot \mathbf{B}$), otrzymujemy wektor $\mathbf{v} \in \Lambda$:
+
+\begin{equation}
+    \mathbf{v} = (\mathbf{k}, \mathbf{s}, -1) \cdot \mathbf{B}_{primal} = (q\mathbf{k} + \mathbf{s}\mathbf{A}^T - \mathbf{b}^T, \quad \mathbf{s}\mathbf{I}_n, \quad -1)
+\end{equation}
+Ponieważ $\mathbf{b}^T = (\mathbf{A}\mathbf{s} + \mathbf{e})^T = \mathbf{s}\mathbf{A}^T + \mathbf{e}^T \pmod q$, pierwszy element wektora upraszcza się do $-\mathbf{e}^T$.
+Ostatecznie poszukiwany wektor w kracie przyjmuje postać:
+\begin{equation}
+    \mathbf{v}_{target} = (-\mathbf{e}^T, \mathbf{s}, -1)
+\end{equation}
+
+Norma euklidesowa tego wektora wynosi $||\mathbf{v}_{target}|| \approx \sqrt{||\mathbf{e}||^2 + ||\mathbf{s}||^2 + 1}$. Przy poprawnym doborze parametrów, wektor $\mathbf{v}_{target}$ jest znacząco krótszy od losowych wektorów w tej kracie. Zastosowanie algorytmów redukcji kraty (np. BKZ) pozwala na znalezienie tego wektora jako najkrótszego (lub jednego z najkrótszych) w bazie.
+
+\subsection{Geneza i zastosowania praktyczne}
+Opisywany atak wywodzi się z prac Kannana nad problemem SVP oraz późniejszych udoskonaleń wprowadzonych przez Baia i Galbraitha. Obecnie stanowi on standardową metodę szacowania poziomu bezpieczeństwa (tzw. \textit{bit security}) systemów postkwantowych.
+\begin{itemize}
+    \item \textbf{Źródło pierwotne:} Albrecht, M. R. i in., "The LWE Estimator".
+    \item \textbf{Wariant Bai-Galbraith:} Wykorzystuje fakt, że współczynniki sekretu $\mathbf{s}$ są często małe (pobierane z tego samego rozkładu co błąd), co umożliwia optymalizację wymiaru kraty i zwiększenie efektywności ataku.
+\end{itemize}

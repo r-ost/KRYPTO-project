@@ -1,0 +1,63 @@
+\section{Specyfikacja implementacji}
+
+\subsection{Pseudokod algorytmu}
+
+Poniższy pseudokod prezentuje procedurę ataku Primal z wykorzystaniem algorytmu redukcji bazy BKZ (Block Korkine-Zolotarev).
+
+\begin{algorithm}
+\caption{Atak Primal na LWE (Wariant z zanurzeniem)}
+\begin{algorithmic}[1]
+\Require Macierz publiczna $\mathbf{A} \in \mathbb{Z}_q^{m \times n}$, wektor $\mathbf{b} \in \mathbb{Z}_q^m$, moduł $q$, rozmiar bloku BKZ $\beta$.
+\Ensure Odszyfrowany sekret $\mathbf{s}'$ lub $\bot$ (w przypadku niepowodzenia).
+
+\State \textbf{Krok 1: Konstrukcja macierzy bazowej $\mathbf{B}$}
+\State Zainicjalizuj macierz $\mathbf{B}$ o wymiarach $(m+n+1) \times (m+n+1)$ wartościami zerowymi.
+\State Wstaw blok $q\mathbf{I}_m$ w lewym górnym rogu.
+\State Wstaw transponowaną macierz $\mathbf{A}^T$ w wierszach od $m$ do $m+n-1$, w kolumnach $0..m-1$.
+\State Wstaw macierz jednostkową $\mathbf{I}_n$ w wierszach od $m$ do $m+n-1$, w kolumnach $m..m+n-1$.
+\State Wstaw transponowany wektor $\mathbf{b}^T$ w ostatnim wierszu, w kolumnach $0..m-1$.
+\State Ustaw element $\mathbf{B}[m+n, m+n] \gets 1$.
+
+\State \textbf{Krok 2: Redukcja kraty}
+\State $\mathbf{B}_{red} \gets \text{LLL}(\mathbf{B})$ \Comment{Wstępna redukcja algorytmem LLL}
+\State $\mathbf{B}_{red} \gets \text{BKZ}(\mathbf{B}_{red}, \text{block\_size}=\beta)$ \Comment{Silna redukcja algorytmem BKZ}
+
+\State \textbf{Krok 3: Ekstrakcja kandydata}
+\For{każdy wiersz $\mathbf{v}$ w macierzy $\mathbf{B}_{red}$}
+    \State $\mathbf{s}_{cand} \gets \mathbf{v}[m : m+n]$ \Comment{Pobranie fragmentu odpowiadającego sekretowi}
+    \If{$\mathbf{A}\mathbf{s}_{cand} \approx \mathbf{b} \pmod q$} \Comment{Weryfikacja poprawności rozwiązania}
+        \State \Return $\mathbf{s}_{cand}$
+    \EndIf
+    \State Sprawdź również wektor przeciwny $-\mathbf{s}_{cand}$ (SVP wyznacza wektor z dokładnością do znaku)
+\EndFor
+
+\State \Return $\bot$
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Dokumentacja funkcjonalna i wymagania}
+
+Aby projekt został zaliczony i funkcjonował poprawnie (zgodnie z przyjętą punktacją), implementacja musi spełniać poniższe wymagania:
+
+\subsubsection{Wymagania środowiskowe}
+\begin{itemize}
+    \item \textbf{Język programowania:} Python 3.8+ (rekomendowany ze względu na dostępność bibliotek kryptograficznych).
+    \item \textbf{Wymagane biblioteki:}
+        \begin{itemize}
+            \item \texttt{numpy} – do wydajnych operacji macierzowych.
+            \item \texttt{fpylll} – profesjonalna biblioteka do redukcji krat (wrapper na bibliotekę C++ fplll). Alternatywnie można wykorzystać środowisko SageMath.
+        \end{itemize}
+\end{itemize}
+
+\subsubsection{Specyfikacja wejścia/wyjścia}
+Program powinien przyjmować parametry wejściowe z pliku konfiguracyjnego lub poprzez argumenty wywołania linii poleceń:
+\begin{itemize}
+    \item \texttt{n} (wymiar sekretu), \texttt{m} (liczba próbek), \texttt{q} (moduł).
+    \item \texttt{alpha/std\_dev} (odchylenie standardowe szumu).
+\end{itemize}
+\textbf{Dane wyjściowe:} Program ma za zadanie wypisać na standardowe wyjście: odnaleziony sekret, rzeczywisty sekret (w celu weryfikacji poprawności w symulacji) oraz czas trwania redukcji.
+
+\subsubsection{Przykładowy scenariusz testowy (Toy Example)}
+Dla celów demonstracyjnych (aby czas wykonania ataku nie przekraczał 1 minuty), należy przyjąć następujące parametry:
+$$ n=40, \quad q=997, \quad \sigma=3.0, \quad m=2n $$
+Dla powyższych wartości, rozmiar bloku BKZ $\beta=20$ powinien okazać się wystarczający.

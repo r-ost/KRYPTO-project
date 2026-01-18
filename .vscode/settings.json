@@ -1,0 +1,15 @@
+{
+    "files.exclude": {
+        "**/main.fdb_latexmk": true,
+        "**/main.aux": true,
+        "**/main.toc": true,
+        "**/main.fls": true,
+        "**/main.log": true,
+        "**/main.out": true,
+        "**/main.synctex.gz": true,
+        "**/main.bbl": true,
+        "**/main.bcf": true,
+        "**/main.blg": true,
+        "**/main.run.xml": true,
+    }
+}
